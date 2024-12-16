@@ -1,13 +1,15 @@
+import os
 import streamlit as st
 from streamlit_drawable_canvas import st_canvas
 import numpy as np
 from PIL import Image
 
-from utils.modul_llm_vision import GeminiAPI
+from dotenv import load_dotenv
+from utils.modul_llm_vision import OpenAIAPI
+load_dotenv(".env")
 
 # Pengaturan awal API
-api_key = "GEMINI API"
-gemini_api = GeminiAPI(api_key)
+openai_api = OpenAIAPI(os.getenv('api_key'))
 
 # Judul Aplikasi
 st.title("Kalkulator AI")
@@ -37,9 +39,9 @@ if st.button("Analisis"):
         img.save("canvas.png")
         
         # Upload gambar dan generate payload untuk Gemini API
-        payload = gemini_api.generate_payload("canvas.png", "Selesaikan masalah matematika berikut dan tulis dalam format markdown dan jika menulis equation menggunakan format latex yang diapit dengan $$. Penulisan harus jelas terlihat jika dimasukkan ke dalam st.markdown() dan langkah-langkah equationnya harus dipisahkan dengan new line")
+        payload = openai_api.generate_payload("canvas.png", "Selesaikan masalah matematika berikut dan tulis dalam format markdown dan jika menulis equation menggunakan format latex yang diapit dengan $$. Penulisan harus jelas terlihat jika dimasukkan ke dalam st.markdown() dan langkah-langkah equationnya harus dipisahkan dengan new line")
 
         # Menampilkan Solusi dari AI
         st.header("Jawaban AI")
-        response = gemini_api.get_response()
+        response = openai_api.get_response()
         st.markdown(response)
